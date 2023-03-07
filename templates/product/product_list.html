@@ -1,0 +1,15 @@
+{% extends "product/navbar.html" %}
+
+{%block body%}
+
+    {%for product in products%}
+        <a href="{% url 'product_list' pk=product.pk %}" >{{ product.name }}</a>
+        {{ product.num_opinions }} 
+        {{product.total_pros}}
+        {{product.total_cons}}
+        {{product.avg_stars}}  
+    {%endfor%}
+
+{% endblock %}
+
+
