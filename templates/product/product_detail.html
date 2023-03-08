@@ -1,5 +1,74 @@
 {% extends "product/navbar.html" %}
 
 {%block body%}
+<style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+</style>
+    <!-- product_detail.html -->
+    {{post_list}}
+<h1>{{ product.name }}</h1>
+<a href="{% url 'download_json' pk=product.pk %}">Download opinions (JSON)</a>
+<a href="{% url 'download_xml' pk=product.pk %}">Download opinions (XML)</a>
+<a href="{% url 'download_csv' pk=product.pk %}">Download opinions (CSV)</a>
+<form method="get">
+  {{ form }}
+  <button type="submit">Filter</button>
+</form>
+<h1>{{ product.name }}</h1>
+<table>
+    <thead>
+      <tr>
+        <th><a href="?ordering=opinion_id">Opinion ID</a></th>
+        <th><a href="?ordering=author">Author</a></th>
+        <th>Recommended</th>
+        <th>Stars</th>
+        <th>Trust</th>
+        <th>Opinion Date</th>
+        <th>Buy Date</th>
+        <th>Useful Counter</th>
+        <th>Unuseful Counter</th>
+        <th>Opinion Description</th>
+        <th>Pros</th>
+        <th>Cons</th>
+        <th>Amount of Pros</th>
+        <th>Amount of Cons</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for opinion in opinions %}
+      <tr>
+        <td>{{ opinion.opinion_id }}</td>
+        <td>{{ opinion.author }}</td>
+        <td>{{ opinion.recommended }}</td>
+        <td>{{ opinion.stars }}</td>
+        <td>{{ opinion.trust }}</td>
+        <td>{{ opinion.opinion_date }}</td>
+        <td>{{ opinion.buy_date }}</td>
+        <td>{{ opinion.useful_counter }}</td>
+        <td>{{ opinion.unuseful_counter }}</td>
+        <td>{{ opinion.opinion_desc }}</td>
+        <td>{{ opinion.pros }}</td>
+        <td>{{ opinion.cons }}</td>
+        <td>{{ opinion.amount_pros }}</td>
+        <td>{{ opinion.amount_cons }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
 
 {% endblock %}

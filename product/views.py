@@ -4,11 +4,13 @@ from bs4 import BeautifulSoup
 import requests
 from . models import Product,Opinions
 from django.db.models import Count,Sum
+from .filters import OpinionsFilter
 import csv
-import xlwt
-import json
+from django.core import serializers
 
 from .forms import UrlForm
+
+
 
 def try_except_decorator(func):
     def wrapper(*args, **kwargs):
@@ -70,6 +72,7 @@ def create_model_instance(request):
         while True:
             user_reviews = soup.find_all(class_='user-post user-post__card js_product-review')
             for review in user_reviews:
+                opinion_id = review.get('data-entry-id')
                 author = review.find(class_="user-post__author-name").text
                 recommended = find_recommended(review)
                 stars = review.find(class_="user-post__score-count").text
@@ -81,18 +84,19 @@ def create_model_instance(request):
                 opinion_desc = review.find(class_="user-post__text").text
                 pros,cons,amount_pros,amount_cons = extract_pros_cons(review)
                 Opinions.objects.create(
+                opinion_id = opinion_id,
                 product = product,
-                author=author,
-                recommended=recommended,
-                stars=stars,
-                trust=trust,
-                opinion_date=opinion_date,
-                buy_date=buy_date,
-                useful_counter=useful_counter,
-                unuseful_counter=unuseful_counter,
-                opinion_desc=opinion_desc,
-                pros=pros,
-                cons=cons,
+                author = author,
+                recommended = recommended,
+                stars = stars,
+                trust = trust,
+                opinion_date = opinion_date,
+                buy_date = buy_date,
+                useful_counter = useful_counter,
+                unuseful_counter = unuseful_counter,
+                opinion_desc = opinion_desc,
+                pros = pros,
+                cons = cons,
                 amount_pros = amount_pros,
                 amount_cons = amount_cons
                 )
@@ -121,8 +125,64 @@ def product_list(request):
                                          total_cons=Sum('opinions__amount_cons'))
     return render(request, 'product/product_list.html', {'products': products})
 
-def product_detail(request, pk):
+""" def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
     opinions = Opinions.objects.filter(product=pk)
     return render(request, 'product/product_detail.html', {'product': product, 'opinions': opinions})
+
+ """
+def download_json(request,pk):
+    product = Product.objects.get(pk=pk)
+    opinions_queryset = Opinions.objects.filter(product=pk)
+    opinions_json = serializers.serialize('json', opinions_queryset)
+    
+    response = HttpResponse(opinions_json, content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename="opinions.json"'
+    
+    return response
+
+def download_xml(request,pk):
+    product = Product.objects.get(pk=pk)
+    opinions_queryset = Opinions.objects.filter(product=pk)
+    opinions_csv = serializers.serialize('xml', opinions_queryset)
+    
+    response = HttpResponse(opinions_csv, content_type='application/xml')
+    response['Content-Disposition'] = 'attachment; filename="opinions.xml"'
+    
+    return response
+
+def download_csv(request, pk):
+    product = Product.objects.get(pk=pk)
+    opinions_queryset = Opinions.objects.filter(product=pk)
+    
+    # Set up the response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="opinions.csv"'
+
+    # Set up the CSV writer
+    writer = csv.writer(response)
+    
+    # Write the header row
+    header_row = ['Opinion ID', 'Product', 'Author', 'Recommended', 'Stars', 'Trust', 'Opinion Date', 'Buy Date', 'Useful Counter', 'Unuseful Counter', 'Opinion Desc', 'Pros', 'Cons', 'Amount Pros', 'Amount Cons']
+    writer.writerow(header_row)
+    
+    # Write the data rows
+    for opinion in opinions_queryset:
+        row = [
+            opinion.opinion_id, opinion.product, opinion.author, opinion.recommended, opinion.stars, opinion.trust,
+            opinion.opinion_date, opinion.buy_date, opinion.useful_counter, opinion.unuseful_counter, opinion.opinion_desc,
+            opinion.pros, opinion.cons, opinion.amount_pros, opinion.amount_cons
+        ]
+        writer.writerow(row)
+
+    return response
+
+def product_detail(request, pk):
+    product = Product.objects.get(pk=pk)
+    opinions_queryset = Opinions.objects.filter(product=pk)
+    opinions_filter = OpinionsFilter(request.GET, queryset=opinions_queryset)
+  
+    opinions = opinions_filter.qs
+    form = opinions_filter.form
+    return render(request, 'product/product_detail.html', {'product': product, 'opinions': opinions,'form':form})
 
