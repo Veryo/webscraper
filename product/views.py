@@ -7,6 +7,8 @@ from django.db.models import Count,Sum
 from .filters import OpinionsFilter
 import csv
 from django.core import serializers
+from functools import wraps
+from django.core.exceptions import ObjectDoesNotExist
 
 from .forms import UrlForm
 
@@ -181,8 +183,42 @@ def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
     opinions_queryset = Opinions.objects.filter(product=pk)
     opinions_filter = OpinionsFilter(request.GET, queryset=opinions_queryset)
-  
     opinions = opinions_filter.qs
     form = opinions_filter.form
-    return render(request, 'product/product_detail.html', {'product': product, 'opinions': opinions,'form':form})
+    return render(request, 'product/product_detail.html', {'product': product, 'opinions': opinions,'form':form,})
 
+def catch_does_not_exist(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ObjectDoesNotExist:
+            return 0
+    return wrapper
+
+@catch_does_not_exist
+def count_recommendations(product_id, recommendation):
+    return Opinions.objects.filter(product=product_id, recommended=recommendation).count()
+
+@catch_does_not_exist
+def count_stars(product_id, stars):
+    return Opinions.objects.filter(product=product_id, stars=stars).count()
+
+def charts(request, pk):
+    product = Product.objects.get(pk=pk)
+    polecam_count = count_recommendations(pk, 'Polecam')
+    nie_polecam_count = count_recommendations(pk, 'Nie polecam')
+    empty_count = count_recommendations(pk, '')
+    one_star = count_stars(pk, '1/5')
+    two_star = count_stars(pk, '2/5')
+    three_star = count_stars(pk, '3/5')
+    four_star = count_stars(pk, '4/5')
+    five_star = count_stars(pk, '5/5')
+    return render(request, 'product/product_charts.html', {'polecam_count': polecam_count,
+                                                           'nie_polecam_count': nie_polecam_count,
+                                                           'empty_count': empty_count,
+                                                           'one_star': one_star,
+                                                           'two_star': two_star,
+                                                           'three_star': three_star,
+                                                           'four_star': four_star,
+                                                           'five_star': five_star})

@@ -8,4 +8,5 @@ urlpatterns = [
     path('product/<int:pk>/json/download/', views.download_json, name='download_json'),
     path('product/<int:pk>/xml/download/', views.download_xml, name='download_xml'),
     path('product/<int:pk>/csv/download/', views.download_csv, name='download_csv'),
+    path('product/<int:pk>/charts/', views.charts, name='charts'),
 ]

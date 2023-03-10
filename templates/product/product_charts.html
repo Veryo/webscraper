@@ -1,0 +1,65 @@
+{% extends "product/navbar.html" %}
+
+{%block body%}
+<div id="chart1">
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+</div>
+    <script>
+    var xValues = ["Polecam", "Nie Polecam", "Empty"];
+    var yValues = ['{{polecam_count}}','{{nie_polecam_count}}','{{empty_count}}'];
+    var barColors = [
+        "#b91d47",
+        "#00aba9",
+        "#2b5797",
+        "#e8c3b9",
+        "#1e7145"
+    ];
+
+    // Get the canvas element and create a new chart
+    var ctx = document.getElementById("myChart").getContext("2d");
+    new Chart(ctx, {
+        type: "pie",
+        data: {
+        labels: xValues,
+        datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+        }]
+        },
+        options: {
+        title: {
+            display: true,
+            text: "World Wide Wine Production 2018"
+        }
+        }
+    });
+    </script>
+   
+    <div id="chart2">
+        <canvas id="myChart1" style="width:100%;max-width:700px"></canvas>
+    </div>
+
+    <script>
+        var xValues = ["1", "2", "3", "4", "5"];
+        var yValues = ['{{one_star}}', '{{two_star}}', '{{three_star}}', '{{four_star}}', '{{five_star}}'];
+        var barColors = ["red", "green","blue","orange","brown"];
+        
+        new Chart("myChart1", {
+          type: "bar",
+          data: {
+            labels: xValues,
+            datasets: [{
+              backgroundColor: barColors,
+              data: yValues
+            }]
+          },
+          options: {
+            legend: {display: false},
+            title: {
+              display: true,
+              text: "World Wine Production 2018"
+            }
+          }
+        });
+        </script>
+{% endblock %}
