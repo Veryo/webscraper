@@ -1,6 +1,7 @@
 {% extends "product/navbar.html" %}
 
 {%block body%}
+<a href="{% url 'product_details' pk=product.pk %}">powrot</a>
 <div id="chart1">
     <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
 </div>

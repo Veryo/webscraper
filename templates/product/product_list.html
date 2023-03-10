@@ -3,7 +3,7 @@
 {%block body%}
 
     {%for product in products%}
-        <a href="{% url 'product_list' pk=product.pk %}" >{{ product.name }}</a>
+        <a href="{% url 'product_details' pk=product.pk %}" >{{ product.name }}</a>
         {{ product.num_opinions }} 
         {{product.total_pros}}
         {{product.total_cons}}

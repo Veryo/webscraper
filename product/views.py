@@ -6,10 +6,12 @@ from . models import Product,Opinions
 from django.db.models import Count,Sum
 from .filters import OpinionsFilter
 import csv
+import codecs
+import json
 from django.core import serializers
 from functools import wraps
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.utils.encoding import smart_str
 from .forms import UrlForm
 
 
@@ -127,16 +129,11 @@ def product_list(request):
                                          total_cons=Sum('opinions__amount_cons'))
     return render(request, 'product/product_list.html', {'products': products})
 
-""" def product_detail(request, pk):
-    product = Product.objects.get(pk=pk)
-    opinions = Opinions.objects.filter(product=pk)
-    return render(request, 'product/product_detail.html', {'product': product, 'opinions': opinions})
 
- """
 def download_json(request,pk):
     product = Product.objects.get(pk=pk)
     opinions_queryset = Opinions.objects.filter(product=pk)
-    opinions_json = serializers.serialize('json', opinions_queryset)
+    opinions_json = json.dumps(json.loads(serializers.serialize('json', opinions_queryset)), indent=4, ensure_ascii=False)
     
     response = HttpResponse(opinions_json, content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="opinions.json"'
@@ -146,9 +143,9 @@ def download_json(request,pk):
 def download_xml(request,pk):
     product = Product.objects.get(pk=pk)
     opinions_queryset = Opinions.objects.filter(product=pk)
-    opinions_csv = serializers.serialize('xml', opinions_queryset)
+    opinions_xml = serializers.serialize('xml', opinions_queryset)
     
-    response = HttpResponse(opinions_csv, content_type='application/xml')
+    response = HttpResponse(opinions_xml, content_type='application/xml')
     response['Content-Disposition'] = 'attachment; filename="opinions.xml"'
     
     return response
@@ -161,6 +158,7 @@ def download_csv(request, pk):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="opinions.csv"'
 
+    response.write(codecs.BOM_UTF8)
     # Set up the CSV writer
     writer = csv.writer(response)
     
@@ -221,4 +219,5 @@ def charts(request, pk):
                                                            'two_star': two_star,
                                                            'three_star': three_star,
                                                            'four_star': four_star,
-                                                           'five_star': five_star})
+                                                           'five_star': five_star,
+                                                           'product':product})

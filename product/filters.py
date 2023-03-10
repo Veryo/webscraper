@@ -36,7 +36,7 @@ class OpinionsFilter(django_filters.FilterSet):
     ]
     opinion_id = django_filters.CharFilter(field_name='opinion_id',lookup_expr='icontains',  label='Opinion ID')
     author = django_filters.CharFilter(field_name='author', lookup_expr='icontains', label='Author')
-    recommended = django_filters.ChoiceFilter(choices=RECOMMENDED_CHOICES,field_name='recommended',label='Recommended')
+    recommended = django_filters.MultipleChoiceFilter(choices=RECOMMENDED_CHOICES,field_name='recommended',label='Recommended')
     stars = django_filters.RangeFilter(field_name='stars', lookup_expr='icontains', label='Stars')
     trust = django_filters.ChoiceFilter(field_name='trust', choices=TRUST_CHOICES, label='Trust')
     opinion_date = django_filters.CharFilter(field_name='opinion_date', lookup_expr='icontains', label='Opinion Date')
@@ -67,13 +67,5 @@ class OpinionsFilter(django_filters.FilterSet):
         ),
         label='Sort by'
     )
-"""  class Meta:
-        model = Opinions
-        fields = '__all__'
-        ordering_fields = [
-            'opinion_id', 'author', 'recommended', 'stars', 'trust', 'opinion_date', 
-            'buy_date', 'useful_counter', 'unuseful_counter', 'opinion_desc', 'pros', 
-            'cons', 'amount_pros', 'amount_cons'
-        ]
-        order_by = ['-opinion_id'] """
+
    
