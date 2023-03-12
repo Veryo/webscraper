@@ -69,7 +69,7 @@ def create_model_instance(request):
     response = requests.get(request)
     soup = BeautifulSoup(response.text, "html.parser")
     avg_stars = soup.find(class_='product-review__score').get('content')
-    name = soup.find(class_='product-top__product-info__name js_product-h1-link js_product-force-scroll js_searchInGoogleTooltip default-cursor').text 
+    name = soup.find(class_="product-top__title").find('h1').text
     product = Product.objects.create(name=name,avg_stars = avg_stars)
     
     try:
@@ -221,3 +221,9 @@ def charts(request, pk):
                                                            'four_star': four_star,
                                                            'five_star': five_star,
                                                            'product':product})
+
+def main(request):
+    return render(request,'product/main.html')
+
+def about(request):
+    return render(request,'product/about.html')

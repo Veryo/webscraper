@@ -3,10 +3,21 @@
 {%block body%}
 
     {% csrf_token %}
-    <form method="post">
-        {% csrf_token %}
-        {{form}}
-        <input type="submit" value="OK">
-    </form>
-  
+    
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Extract Opinion</h1>
+                <form method="post" class='text-center text-white'>
+                    {% csrf_token %}
+                    {% load crispy_forms_tags %}
+                    <div style="font-size: 15px;">
+                        {{form}}
+                        <input type="submit" class="btn btn-secondary" style="font-size: 20px;" value="Extract">
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+      </header>
 {% endblock %}
