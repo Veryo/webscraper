@@ -1,10 +1,17 @@
 {% extends "product/navbar.html" %}
 
 {%block body%}
-<a href="{% url 'product_details' pk=product.pk %}">powrot</a>
-<div id="chart1">
-    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+<a href="{% url 'product_details' pk=product.pk %} "class="btn btn-secondary btn-lg btn-block">powrot</a>
+<h1 class="text-center bg-dark py-5  text-white"  >Udział poszczególnych rekomendacji w ogólnej liczbie opinii</h1>
+<div id="chart1" class="d-flex justify-content-center align-items-center mx-auto text-center" style="max-width: 600px;">
+  
+  <canvas id="myChart" width="500" height="300"></canvas>
 </div>
+<h1 class="text-center bg-dark py-5  text-white"  >Liczba opinii z poszczególnymi liczbami gwiazdek</h1>
+<div id="chart1" class="d-flex justify-content-center align-items-center mx-auto text-center" style="max-width: 600px;">
+  <canvas id="myChart1" width="500" height="300"></canvas>
+</div>
+
     <script>
     var xValues = ["Polecam", "Nie Polecam", "Empty"];
     var yValues = ['{{polecam_count}}','{{nie_polecam_count}}','{{empty_count}}'];
@@ -29,18 +36,13 @@
         },
         options: {
         title: {
-            display: true,
+            display: false,
             text: "World Wide Wine Production 2018"
         }
         }
     });
-    </script>
-   
-    <div id="chart2">
-        <canvas id="myChart1" style="width:100%;max-width:700px"></canvas>
-    </div>
+    
 
-    <script>
         var xValues = ["1", "2", "3", "4", "5"];
         var yValues = ['{{one_star}}', '{{two_star}}', '{{three_star}}', '{{four_star}}', '{{five_star}}'];
         var barColors = ["red", "green","blue","orange","brown"];
@@ -57,10 +59,13 @@
           options: {
             legend: {display: false},
             title: {
-              display: true,
-              text: "World Wine Production 2018"
+              display: false,
+              text: "Test"
             }
           }
         });
-        </script>
+    </script>
+   
+   
+
 {% endblock %}

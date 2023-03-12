@@ -136,7 +136,7 @@ def download_json(request,pk):
     opinions_json = json.dumps(json.loads(serializers.serialize('json', opinions_queryset)), indent=4, ensure_ascii=False)
     
     response = HttpResponse(opinions_json, content_type='application/json')
-    response['Content-Disposition'] = 'attachment; filename="opinions.json"'
+    response['Content-Disposition'] = f'attachment; filename="{product.name} opinions.json"'
     
     return response
 
@@ -146,7 +146,7 @@ def download_xml(request,pk):
     opinions_xml = serializers.serialize('xml', opinions_queryset)
     
     response = HttpResponse(opinions_xml, content_type='application/xml')
-    response['Content-Disposition'] = 'attachment; filename="opinions.xml"'
+    response['Content-Disposition'] = f'attachment; filename="{product.name} opinions.xml"'
     
     return response
 
@@ -156,7 +156,7 @@ def download_csv(request, pk):
     
     # Set up the response
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="opinions.csv"'
+    response['Content-Disposition'] = f'attachment; filename="{product.name} opinions.csv"'
 
     response.write(codecs.BOM_UTF8)
     # Set up the CSV writer

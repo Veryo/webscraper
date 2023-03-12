@@ -1,44 +1,15 @@
 import django_filters
+from django_filters import FilterSet, MultipleChoiceFilter
+from django_filters.widgets import CSVWidget
+from django import forms
 from .models import Opinions
 
-
-""" class OpinionsFilter(django_filters.FilterSet):
-    opinion = 
-    author = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    recommended = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    stars = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    trust = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    opinion_date = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    buy_date = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    useful_counter = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    unuseful_counter = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    opinion_desc = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    pros = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    cons = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    amount_pros = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-    amount_cons = django_filters.ModelChoiceFilter(queryset=Opinions.objects.all())
-
-    class Meta:
-        model = Opinions
-        fields =['recommended']
-    """
-
-
 class OpinionsFilter(django_filters.FilterSet):
-    RECOMMENDED_CHOICES = [
-        ('', 'Brak'),
-        ('Polecam', 'Polecam'),
-        ('Nie polecam', 'Nie polecam'),
-    ]
-    TRUST_CHOICES = [
-        (' ', 'Niepotwierdzona'),
-        ('Opinia potwierdzona zakupem', 'Potwierdzona'),
-    ]
     opinion_id = django_filters.CharFilter(field_name='opinion_id',lookup_expr='icontains',  label='Opinion ID')
     author = django_filters.CharFilter(field_name='author', lookup_expr='icontains', label='Author')
-    recommended = django_filters.MultipleChoiceFilter(choices=RECOMMENDED_CHOICES,field_name='recommended',label='Recommended')
-    stars = django_filters.RangeFilter(field_name='stars', lookup_expr='icontains', label='Stars')
-    trust = django_filters.ChoiceFilter(field_name='trust', choices=TRUST_CHOICES, label='Trust')
+    recommended = django_filters.AllValuesMultipleFilter(field_name='recommended', label='Recommended', widget=forms.CheckboxSelectMultiple(attrs={'class': 'list-unstyled'}))
+    stars = django_filters.RangeFilter(field_name='stars',lookup_expr='icontains', label='Stars',)
+    trust = django_filters.AllValuesMultipleFilter(field_name='trust', label='Trust', widget=forms.CheckboxSelectMultiple(attrs={'class': 'list-unstyled'}))
     opinion_date = django_filters.CharFilter(field_name='opinion_date', lookup_expr='icontains', label='Opinion Date')
     buy_date = django_filters.CharFilter(field_name='buy_date', lookup_expr='icontains', label='Buy Date')
     useful_counter = django_filters.RangeFilter(field_name='useful_counter', lookup_expr='icontains', label='Useful Counter')
@@ -67,5 +38,5 @@ class OpinionsFilter(django_filters.FilterSet):
         ),
         label='Sort by'
     )
-
+ 
    

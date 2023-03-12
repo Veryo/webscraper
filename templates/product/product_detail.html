@@ -9,7 +9,7 @@
     }
     
     td, th {
-      border: 1px solid #dddddd;
+      border: 1px solid black;
       text-align: left;
       padding: 8px;
     }
@@ -17,36 +17,215 @@
     tr:nth-child(even) {
       background-color: #dddddd;
     }
+    form label, form input, form select {
+        display: block;
+        margin-bottom: 10px;
+    }
+    .filter-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20%;
+  height: 80%;
+  max-width: 600px;
+  max-height: 600px;
+  background-color: white;
+  border: 1px solid black;
+  padding: 20px;
+  overflow-y: scroll;
+}
+
+.filter-modal form {
+  margin: 0;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  display: none;
+}
+
+#scrollUpBtn,
+#scrollDownBtn {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #ccc;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#scrollUpBtn {
+  bottom: 60px;
+}
+
+#scrollUpBtn:hover,
+#scrollDownBtn:hover {
+  background-color: #555;
+  color: white;
+}
+.filter-options {
+  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  display: none; /* Hide the filter options by default */
+}
+
+/* Add some styles to make the filter options more visible */
+.filter-options {
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+}
+
+/* Show the filter options when the "show" class is added */
+.filter-options.show {
+  display: block;
+}
+
 </style>
-<a href="{% url 'charts' pk=product.pk %}">charts</a>
+<header class="bg-dark py-5">
+  <div class="container px-4 px-lg-5 my-5">
+      <div class="text-center text-white">
+          <h1 class="display-4 fw-bolder">{{ product.name }}</h1>
+      </div>
+  </div>
+  <a href="{% url 'download_json' pk=product.pk %}" class="btn btn-secondary btn-lg btn-block">Download opinions (JSON)</a>
+  <a href="{% url 'download_xml' pk=product.pk %}"class="btn btn-secondary btn-lg btn-block">Download opinions (XML)</a>
+  <a href="{% url 'download_csv' pk=product.pk %}"class="btn btn-secondary btn-lg btn-block">Download opinions (CSV)</a>
+  <a href="{% url 'charts'  pk=product.pk %} "class="btn btn-secondary btn-lg btn-block">Charts</a>
+  <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="openFilterOptions()">Filter Options</button>
+  <button type="button" class="btn btn-secondary btn-lg btn-block filter-options" onclick="openFilterOptions()">Filter Options</button>
+</header>
+<h1 class="text-center"></h1>
+
     <!-- product_detail.html -->
-    {{post_list}}
-<h1>{{ product.name }}</h1>
-<a href="{% url 'download_json' pk=product.pk %}">Download opinions (JSON)</a>
-<a href="{% url 'download_xml' pk=product.pk %}">Download opinions (XML)</a>
-<a href="{% url 'download_csv' pk=product.pk %}">Download opinions (CSV)</a>
-<form method="get">
-  {{ form }}
-  <button type="submit">Filter</button>
-</form>
-<h1>{{ product.name }}</h1>
+
+    
+
+
+
+
+<div id="filterModal" class="filter-modal">
+  <form id="filterForm" method="get">
+    {% load crispy_forms_tags %}
+    {{ form|crispy }}
+    <button type="submit">Filter</button>
+  </form>
+</div>
+
+
+<script>
+ // Get the header container
+const header = document.querySelector('header');
+
+// Get the filter options container
+const filterOptions = document.querySelector('.filter-options');
+
+// Get the height of the header container
+const headerHeight = header.offsetHeight;
+
+// Get the position of the filter options container relative to the top of the document
+const filterOptionsPosition = filterOptions.offsetTop + headerHeight;
+
+// Add a scroll event listener to the window object
+window.addEventListener('scroll', function() {
+  // Check if the user has scrolled past the header
+  if (window.pageYOffset > headerHeight) {
+    // Add a class to the filter options container to show it
+    filterOptions.classList.add('show');
+  } else {
+    // Remove the class from the filter options container to hide it
+    filterOptions.classList.remove('show');
+  }
+});
+  function openFilterOptions() {
+    // Show the filter modal
+    var filterModal = document.getElementById("filterModal");
+    filterModal.style.display = "block";
+  
+    // Show the overlay on the parent window
+    var overlay = document.querySelector(".overlay");
+    overlay.style.display = "block";
+  
+    var mainContent = document.querySelector("main");
+    var header = document.querySelector("header");
+    var footer = document.querySelector("footer");
+    mainContent.style.filter = "blur(5px)";
+    header.style.filter = "blur(5px)";
+    footer.style.filter = "blur(5px)";
+  
+    // Close the filter modal and overlay when the user clicks outside of them
+    overlay.addEventListener("click", function() {
+      filterModal.style.display = "none";
+      overlay.style.display = "none";
+      mainContent.style.filter = "";
+      header.style.filter = "";
+      footer.style.filter = "";
+    });
+    // Scroll up or down when the scroll buttons are clicked
+    var scrollStep = 50; // The amount of pixels to scroll
+    var scrollUpBtn = document.getElementById("scrollUpBtn");
+    var scrollDownBtn = document.getElementById("scrollDownBtn");
+  
+    scrollUpBtn.addEventListener("click", function() {
+      filterModal.scrollTop -= scrollStep;
+    });
+  
+    scrollDownBtn.addEventListener("click", function() {
+      filterModal.scrollTop += scrollStep;
+    });
+    
+    // Remove the overflow from body when the filter modal is open
+    document.body.style.overflow = "hidden";
+  }
+  
+  // Close the filter modal and overlay when the user submits the form
+  var filterForm = document.getElementById("filterForm");
+  filterForm.addEventListener("submit", function() {
+    var filterModal = document.getElementById("filterModal");
+    var overlay = document.querySelector(".overlay");
+    
+    filterModal.style.display = "none";
+    overlay.style.display = "none";
+    document.body.style.overflow = ""; // Remove the overflow hidden from body
+  });
+</script>
+
+
+
+
 <table>
     <thead>
       <tr>
-        <th><a href="?ordering=opinion_id">Opinion ID</a></th>
-        <th><a href="?ordering=author">Author</a></th>
-        <th>Recommended</th>
-        <th>Stars</th>
-        <th>Trust</th>
-        <th>Opinion Date</th>
-        <th>Buy Date</th>
-        <th>Useful Counter</th>
-        <th>Unuseful Counter</th>
-        <th>Opinion Description</th>
-        <th>Pros</th>
-        <th>Cons</th>
-        <th>Amount of Pros</th>
-        <th>Amount of Cons</th>
+          <th>Opinion ID</th>
+          <th>Author</th>
+          <th>Recommended</th>
+          <th>Stars</th>
+          <th>Trust</th>
+          <th>Opinion Date</th>
+          <th>Buy Date</th>
+          <th>Useful Counter</th>
+          <th>Unuseful Counter</th>
+          <th>Opinion Description</th>
+          <th>Pros</th>
+          <th>Cons</th>
+          <th>Amount of Pros</th>
+          <th>Amount of Cons</th>
       </tr>
     </thead>
     <tbody>
@@ -70,6 +249,6 @@
       {% endfor %}
     </tbody>
   </table>
-  
+</div>
 
 {% endblock %}

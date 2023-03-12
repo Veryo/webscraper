@@ -2,14 +2,86 @@
 
 {%block body%}
 
-    {%for product in products%}
-        <a href="{% url 'product_details' pk=product.pk %}" >{{ product.name }}</a>
-        {{ product.num_opinions }} 
-        {{product.total_pros}}
-        {{product.total_cons}}
-        {{product.avg_stars}}  
-    {%endfor%}
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Lista produktów</h1>
+                
+            </div>
+        </div>
+    </header>
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            {% for product in products %}
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                    
+                        
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center" >
+                                <!-- Product name-->
+                                <h5 class="fw-bolder" style="font-size: 18px;">{{ product.name }}</h5>
+                                
+                                <!-- Product stats-->
+                                <div class="product-stats" style="font-size: 14px;">
+                                    <div>Number of opinions: {{ product.num_opinions }}</div>
+                                    <div>Total pros: {{ product.total_pros }}</div>
+                                    <div>Total cons: {{ product.total_cons }}</div>
+                                    <div>Average stars: {{ product.avg_stars }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <a class="btn btn-outline-dark btn-lg btn-block" href="{% url 'product_details' pk=product.pk %}">Zobacz opinie</a>
+                                <a href="{% url 'download_json' pk=product.pk %}" class="btn btn-outline-dark btn-lg btn-block">Download opinions (JSON)</a>
+                                <a href="{% url 'download_xml' pk=product.pk %}"class="btn btn-outline-dark btn-lg btn-block">Download opinions (XML)</a>
+                                <a href="{% url 'download_csv' pk=product.pk %}"class="btn btn-outline-dark btn-lg btn-block">Download opinions (CSV)</a>
 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    
 {% endblock %}
 
 
+
+    
+<div class="row row-cols-1 row-cols-md-2 w-auto p-3" id="autor">
+    {% for product in products %}
+    <div class="col mb-4">
+    <div class="card">
+    <img src="{{ product.image_url }}" class="card-img-top">
+    <div class="card-body">
+    <h5 class="card-title">{{ product.name }}</h5>
+    <p class="card-text">Number of opinions: {{ product.num_opinions }}</p>
+    <p class="card-text">Total pros: {{ product.total_pros }}</p>
+    <p class="card-text">Total cons: {{ product.total_cons }}</p>
+    <p class="card-text">Average stars: {{ product.avg_stars }}</p>
+    <a href="{% url 'product_details' pk=product.pk %}" class="btn btn-primary">View details</a>
+    <a href="{% url 'download_json' pk=product.pk %}" class="btn btn-secondary btn-lg btn-block">Download opinions (JSON)</a>
+    <a href="{% url 'download_xml' pk=product.pk %}"class="btn btn-secondary btn-lg btn-block">Download opinions (XML)</a>
+    <a href="{% url 'download_csv' pk=product.pk %}"class="btn btn-secondary btn-lg btn-block">Download opinions (CSV)</a>
+    </div>
+    </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{%for product in products%}
+<a href="{% url 'product_details' pk=product.pk %}" >{{ product.name }}</a>
+{{ product.num_opinions }} 
+{{product.total_pros}}
+{{product.total_cons}}
+{{product.avg_stars}}  
+{%endfor%}
