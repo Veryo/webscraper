@@ -117,7 +117,7 @@ def add_product(request):
     if request.method == 'POST':
         form = UrlForm(request.POST)
         if form.is_valid():
-            url = form.cleaned_data['your_name']
+            url = form.cleaned_data['id']
             create_model_instance(url)
     else:
         form = UrlForm()
