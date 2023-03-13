@@ -5,6 +5,7 @@ import requests
 from . models import Product,Opinions
 from django.db.models import Count,Sum
 from .filters import OpinionsFilter
+from django.urls import reverse
 import csv
 import codecs
 import json
@@ -13,6 +14,7 @@ from functools import wraps
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.encoding import smart_str
 from .forms import UrlForm
+from django.contrib import messages
 
 
 
@@ -68,6 +70,7 @@ def extract_pros_cons(review):
 def create_model_instance(request):
     response = requests.get(request)
     soup = BeautifulSoup(response.text, "html.parser")
+   
     avg_stars = soup.find(class_='product-review__score').get('content')
     name = soup.find(class_="product-top__title").find('h1').text
     product = Product.objects.create(name=name,avg_stars = avg_stars)
@@ -109,16 +112,23 @@ def create_model_instance(request):
             url= 'https://www.ceneo.pl'+ new_url
             response = requests.get(url)
             soup = BeautifulSoup(response.text, "html.parser")
-           
     except:
-        pass
+        return product.pk
 
 def add_product(request):
     if request.method == 'POST':
         form = UrlForm(request.POST)
         if form.is_valid():
-            url = form.cleaned_data['id']
-            create_model_instance(url)
+            url = "https://www.ceneo.pl/"
+            url += form.cleaned_data['id']
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, "html.parser") 
+            if response.ok  and soup.find(class_='product-review__link link link--accent js_clickHash js_seoUrl') ==None:
+                pk = create_model_instance(url)
+                return redirect('product_details', pk=pk)
+            else:
+                messages.error(request,'The product does not exist or it has no opinions')
+                return redirect('add_product')
     else:
         form = UrlForm()
     return render(request, 'product/add_product.html', {'form': form})
