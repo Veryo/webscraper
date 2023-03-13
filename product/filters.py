@@ -1,8 +1,6 @@
 import django_filters
-from django_filters import FilterSet, MultipleChoiceFilter
-from django_filters.widgets import CSVWidget
 from django import forms
-from .models import Opinions
+
 
 class OpinionsFilter(django_filters.FilterSet):
     opinion_id = django_filters.CharFilter(field_name='opinion_id',lookup_expr='icontains',  label='Opinion ID')
@@ -19,6 +17,7 @@ class OpinionsFilter(django_filters.FilterSet):
     cons = django_filters.CharFilter(field_name='cons', lookup_expr='icontains', label='Cons')
     amount_pros = django_filters.RangeFilter(field_name='amount_pros', label='Amount of Pros')
     amount_cons = django_filters.RangeFilter(field_name='amount_cons', label='Amount of Cons')
+
     order_by = django_filters.OrderingFilter(
         fields=(
             ('opinion_id', 'opinion_id'),
