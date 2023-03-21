@@ -1,18 +1,20 @@
 {% extends "product/navbar.html" %}
 
 {%block body%}
-<a href="{% url 'product_details' pk=product.pk %} "class="btn btn-secondary btn-lg btn-block" style="font-size: 18px;">Back To Previous Page</a>
-<h1 class="text-center bg-dark py-5  text-white"  >Share of individual recommendations in the total number of opinions</h1>
-<div id="chart1" class="d-flex justify-content-center align-items-center mx-auto text-center" style="max-width: 600px;">
-  
-  <canvas id="myChart" width="500" height="300"></canvas>
-</div>
-<h1 class="text-center bg-dark py-5  text-white"  >Number of reviews with individual star ratings</h1>
-<div id="chart1" class="d-flex justify-content-center align-items-center mx-auto text-center" style="max-width: 600px;">
-  <canvas id="myChart1" width="500" height="300"></canvas>
-</div>
+  <a href="{% url 'product_details' pk=product.pk %} "class="btn btn-secondary btn-lg btn-block" style="font-size: 18px;">Back To Previous Page</a>
 
-    <script>
+  
+  <h1 class="text-center bg-dark py-5  text-white"  >Share of individual recommendations in the total number of opinions</h1>
+  <div id="chart1" class="d-flex justify-content-center align-items-center mx-auto text-center" style="max-width: 600px;">
+    <canvas id="myChart" width="500" height="300"></canvas>
+  </div>
+
+  <h1 class="text-center bg-dark py-5  text-white"  >Number of reviews with individual star ratings</h1>
+  <div id="chart1" class="d-flex justify-content-center align-items-center mx-auto text-center" style="max-width: 600px;">
+    <canvas id="myChart1" width="500" height="300"></canvas>
+  </div>
+
+  <script>
     var xValues = ["Polecam", "Nie Polecam", "Puste"];
     var yValues = ['{{polecam_count}}','{{nie_polecam_count}}','{{empty_count}}'];
     var barColors = [
@@ -64,7 +66,7 @@
             }
           }
         });
-    </script>
+  </script>
    
    
 

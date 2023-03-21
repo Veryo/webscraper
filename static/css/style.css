@@ -1,0 +1,94 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  form label, form input, form select {
+      display: block;
+      margin-bottom: 10px;
+  }
+  .filter-modal {
+display: none;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 20%;
+height: 80%;
+max-width: 600px;
+max-height: 600px;
+background-color: white;
+border: 1px solid black;
+padding: 20px;
+overflow-y: scroll;
+}
+
+.filter-modal form {
+margin: 0;
+}
+
+.overlay {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+z-index: 1;
+display: none;
+}
+
+#scrollUpBtn,
+#scrollDownBtn {
+position: absolute;
+bottom: 20px;
+width: 100%;
+padding: 10px;
+border: none;
+background-color: #ccc;
+color: black;
+font-size: 16px;
+cursor: pointer;
+}
+
+#scrollUpBtn {
+bottom: 60px;
+}
+
+#scrollUpBtn:hover,
+#scrollDownBtn:hover {
+background-color: #555;
+color: white;
+}
+.filter-options {
+
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+z-index: 9999;
+display: none; /* Hide the filter options by default */
+}
+
+/* Add some styles to make the filter options more visible */
+.filter-options {
+background-color: #fff;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+padding: 10px;
+}
+
+/* Show the filter options when the "show" class is added */
+.filter-options.show {
+display: block;
+}
