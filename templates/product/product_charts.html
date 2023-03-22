@@ -1,22 +1,24 @@
 {% extends "product/navbar.html" %}
 
 {%block body%}
-  <a href="{% url 'product_details' pk=product.pk %} "class="btn btn-secondary btn-lg btn-block" style="font-size: 18px;">Back To Previous Page</a>
+  <a href="{% url 'product_details' pk=product.pk %} "class="btn btn-secondary btn-lg btn-block" style="font-size: 18px;">Back To Product Page</a>
 
   
-  <h1 class="text-center bg-dark py-5  text-white"  >Share of individual recommendations in the total number of opinions</h1>
+  <h1 class="text-center bg-dark py-5  text-white"  ><ins>Share of individual recommendations in the total number of opinions</ins></h1>
   <div id="chart1" class="d-flex justify-content-center align-items-center mx-auto text-center" style="max-width: 600px;">
     <canvas id="myChart" width="500" height="300"></canvas>
   </div>
 
-  <h1 class="text-center bg-dark py-5  text-white"  >Number of reviews with individual star ratings</h1>
+  <h1 class="text-center bg-dark py-5  text-white"  ><ins>Number of reviews with individual star ratings</ins></h1>
   <div id="chart1" class="d-flex justify-content-center align-items-center mx-auto text-center" style="max-width: 600px;">
     <canvas id="myChart1" width="500" height="300"></canvas>
   </div>
 
   <script>
-    var xValues = ["Polecam", "Nie Polecam", "Puste"];
-    var yValues = ['{{polecam_count}}','{{nie_polecam_count}}','{{empty_count}}'];
+  
+    var values = {{ recomend_values|safe }};
+    var labels = {{ recomend_labels|safe }};
+
     var barColors = [
         "#b91d47",
         "#00aba9",
@@ -25,15 +27,14 @@
         "#1e7145"
     ];
 
-    // Get the canvas element and create a new chart
     var ctx = document.getElementById("myChart").getContext("2d");
     new Chart(ctx, {
         type: "pie",
         data: {
-        labels: xValues,
+        labels: labels,
         datasets: [{
             backgroundColor: barColors,
-            data: yValues
+            data: values
         }]
         },
         options: {
@@ -45,17 +46,17 @@
     });
     
 
-        var xValues = ["1", "2", "3", "4", "5"];
-        var yValues = ['{{one_star}}', '{{two_star}}', '{{three_star}}', '{{four_star}}', '{{five_star}}'];
+        var values = {{ star_values|safe }};
+        var labels = {{ star_labels|safe }};
         var barColors = ["red", "green","blue","orange","brown"];
         
         new Chart("myChart1", {
           type: "bar",
           data: {
-            labels: xValues,
+            labels: labels,
             datasets: [{
               backgroundColor: barColors,
-              data: yValues
+              data: values
             }]
           },
           options: {

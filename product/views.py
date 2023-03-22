@@ -8,6 +8,7 @@ import codecs
 import json
 from django.core import serializers
 from django.contrib import messages
+import collections as co
 
 from . models import Product,Opinions
 from .forms import UrlForm
@@ -61,25 +62,35 @@ def product_detail(request, pk):
     opinions = opinions_filter.qs
     form = opinions_filter.form
 
+    if form.is_valid():
+        pass
+    else:
+         messages.error(request,'Wrong Filtering Options')
+    
     return render(request, 'product/product_detail.html', {'product': product, 'opinions': opinions,'form':form,})
 
 
 def charts(request, pk):
     product = Product.objects.get(pk=pk)
-
-    polecam_count = count_recommendations(pk, 'Polecam')
-    nie_polecam_count = count_recommendations(pk, 'Nie polecam')
-    empty_count = count_recommendations(pk, '')
-
-    one_star = count_stars(pk, '1/5')
-    two_star = count_stars(pk, '2/5')
-    three_star = count_stars(pk, '3/5')
-    four_star = count_stars(pk, '4/5')
-    five_star = count_stars(pk, '5/5')
-
-    context ={'polecam_count': polecam_count, 'nie_polecam_count': nie_polecam_count,'empty_count': empty_count, 'one_star': one_star, 
-              'two_star': two_star, 'three_star': three_star, 'four_star': four_star, 'five_star': five_star, 'product':product }
+    opinions_queryset = Opinions.objects.filter(product=pk)
     
+    recomeded = co.Counter([x.recommended for x in opinions_queryset])
+    recomend_labels = [k for k in recomeded]
+    recomend_values = [v for k,v in recomeded.items()]
+
+    stars = co.Counter([x.stars for x in opinions_queryset])
+    star_lables = [k for k in stars]
+    star_values = [v for k,v in stars.items()]
+
+    context = {
+        'product':product,
+        'recomend_labels': recomend_labels,
+        'recomend_values': recomend_values,
+        'star_labels':star_lables,
+        'star_values':star_values
+
+    }
+
     return render(request, 'product/product_charts.html', context)
 
 

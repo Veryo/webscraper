@@ -5,7 +5,7 @@
   <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">{{ product.name }}</h1>
+            <h1 class="display-4 fw-bolder"><ins>{{ product.name }}</ins></h1>
         </div>
     </div>
 
@@ -23,85 +23,9 @@
     {% load crispy_forms_tags %}
     {{ form|crispy }}
     <button type="submit">Filter</button>
+
   </form>
 </div>
-
-<script>
- // Get the header container
-const header = document.querySelector('header');
-
-// Get the filter options container
-const filterOptions = document.querySelector('.filter-options');
-
-// Get the height of the header container
-const headerHeight = header.offsetHeight;
-
-// Get the position of the filter options container relative to the top of the document
-const filterOptionsPosition = filterOptions.offsetTop + headerHeight;
-
-// Add a scroll event listener to the window object
-window.addEventListener('scroll', function() {
-  // Check if the user has scrolled past the header
-  if (window.pageYOffset > headerHeight) {
-    // Add a class to the filter options container to show it
-    filterOptions.classList.add('show');
-  } else {
-    // Remove the class from the filter options container to hide it
-    filterOptions.classList.remove('show');
-  }
-});
-  function openFilterOptions() {
-    // Show the filter modal
-    var filterModal = document.getElementById("filterModal");
-    filterModal.style.display = "block";
-  
-    // Show the overlay on the parent window
-    var overlay = document.querySelector(".overlay");
-    overlay.style.display = "block";
-  
-    var mainContent = document.querySelector("main");
-    var header = document.querySelector("header");
-    var footer = document.querySelector("footer");
-    mainContent.style.filter = "blur(5px)";
-    header.style.filter = "blur(5px)";
-    footer.style.filter = "blur(5px)";
-  
-    // Close the filter modal and overlay when the user clicks outside of them
-    overlay.addEventListener("click", function() {
-      filterModal.style.display = "none";
-      overlay.style.display = "none";
-      mainContent.style.filter = "";
-      header.style.filter = "";
-      footer.style.filter = "";
-    });
-    // Scroll up or down when the scroll buttons are clicked
-    var scrollStep = 50; // The amount of pixels to scroll
-    var scrollUpBtn = document.getElementById("scrollUpBtn");
-    var scrollDownBtn = document.getElementById("scrollDownBtn");
-  
-    scrollUpBtn.addEventListener("click", function() {
-      filterModal.scrollTop -= scrollStep;
-    });
-  
-    scrollDownBtn.addEventListener("click", function() {
-      filterModal.scrollTop += scrollStep;
-    });
-    
-    // Remove the overflow from body when the filter modal is open
-    document.body.style.overflow = "hidden";
-  }
-  
-  // Close the filter modal and overlay when the user submits the form
-  var filterForm = document.getElementById("filterForm");
-  filterForm.addEventListener("submit", function() {
-    var filterModal = document.getElementById("filterModal");
-    var overlay = document.querySelector(".overlay");
-    
-    filterModal.style.display = "none";
-    overlay.style.display = "none";
-    document.body.style.overflow = ""; // Remove the overflow hidden from body
-  });
-</script>
 
 <table>
     <thead>
@@ -145,4 +69,27 @@ window.addEventListener('scroll', function() {
   </table>
 </div>
 
+<script>
+  const header = document.querySelector('header');
+  
+  const filterOptions = document.querySelector('.filter-options');
+  
+  const headerHeight = header.offsetHeight;
+  
+  const filterOptionsPosition = filterOptions.offsetTop + headerHeight;
+  
+  window.addEventListener('scroll', function() {
+    if (window.pageYOffset > headerHeight) {
+      filterOptions.classList.add('show');
+    } else {
+      filterOptions.classList.remove('show');
+    }
+  });
+
+    function openFilterOptions() {
+      var filterModal = document.getElementById("filterModal");
+      
+      filterModal.style.display = "block";
+    }
+  </script>
 {% endblock %}

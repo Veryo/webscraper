@@ -1,25 +1,37 @@
 {% extends "product/navbar.html" %}
 
-{%block body%}
-
-    {% csrf_token %}
+{% block body %}
     
-    <header class="bg-dark py-5">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder ">Extract Opinion</h1>
-                <form method="post" class="text-center">
-                    {% csrf_token %}
-                    {% load crispy_forms_tags %}
-                    <div style="font-size: 15px;" class=" justify-content-center form-inline">
-                        <h2 class=" ">Pass The Ceneo ID: </h2>
-                        <div class="text-center text-dark">{{form.id}}</div>
-                        
-                        <input type="submit" class="btn btn-secondary" style="font-size: 20px;" value="Extract">
-                    </div>
-                </form>
-            </div>
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder"><ins>Extract Opinion</ins></h1>
         </div>
-      </header>
-      
+        <form method="post" class="text-center" id="form">
+            {% csrf_token %}
+            <div class="justify-content-center form-inline" style="font-size: 15px;">
+                <h2 class="mb-4 text-white">Enter Ceneo ID:&nbsp;</h2>
+                <div class="text-center text-dark"><input type="text" name="id" id="id" onkeyup="removeSpaces(this)" required></div>
+                <a>&nbsp;</a>
+                <button type="submit" class="btn btn-secondary mb-3 " style="font-size: 17px;" onclick="showMessage()">Extract</button>
+            </div>
+        </form>
+    </div>
+    <div class="text-center text-white display-4" style="font-size: 15px;" id="message"></div>
+</header>
+
+
+    
+<script>
+   function showMessage() {
+    var form = document.getElementById("form");
+    if (form.checkValidity()) {
+        var messageDiv = document.getElementById("message");
+        messageDiv.innerHTML = '<span class="mr-2 ">Extracting data. Please wait... You will be redirected to the product page.</span><span class="spinner-border spinner-border-sm text-light"></span>';
+        }   
+    }
+function removeSpaces(input) {
+        input.value = input.value.replace(/\s+/g, '');
+    }
+ </script>
 {% endblock %}
